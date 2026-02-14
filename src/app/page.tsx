@@ -136,10 +136,16 @@ export default function Home() {
   );
 
   const stats = useMemo(() => {
-    const dailyDone = dailyGoals.filter((goal) =>
+    const dailyCheckins = dailyGoals.filter(
+      (goal) => getCountForPeriod(goal, dailyKey) > 0,
+    ).length;
+    const monthlyCheckins = monthlyGoals.filter(
+      (goal) => getCountForPeriod(goal, monthlyKey) > 0,
+    ).length;
+    const dailyCompleted = dailyGoals.filter((goal) =>
       isGoalComplete(goal, dailyKey),
     ).length;
-    const monthlyDone = monthlyGoals.filter((goal) =>
+    const monthlyCompleted = monthlyGoals.filter((goal) =>
       isGoalComplete(goal, monthlyKey),
     ).length;
     const anytimeDone = anytimeGoals.filter((goal) =>
@@ -147,15 +153,15 @@ export default function Home() {
     ).length;
 
     const totalGoals = goals.length;
-    const completedGoals = dailyDone + monthlyDone + anytimeDone;
+    const completedGoals = dailyCompleted + monthlyCompleted + anytimeDone;
     const completionRate = totalGoals
       ? Math.round((completedGoals / totalGoals) * 100)
       : 0;
 
     return {
       totalGoals,
-      dailyDone,
-      monthlyDone,
+      dailyCheckins,
+      monthlyCheckins,
       anytimeDone,
       completionRate,
     };
@@ -262,14 +268,14 @@ export default function Home() {
                 hint="All resolutions"
               />
               <StatCard
-                label="Completed today"
-                value={stats.dailyDone}
+                label="Checked in today"
+                value={stats.dailyCheckins}
                 hint="Daily check-ins"
               />
               <StatCard
-                label="Completed this month"
-                value={stats.monthlyDone}
-                hint="Monthly milestones"
+                label="Checked in this month"
+                value={stats.monthlyCheckins}
+                hint="Monthly check-ins"
               />
               <StatCard
                 label="Completion rate"
@@ -419,13 +425,13 @@ export default function Home() {
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
             <ProgressTile
               title="Daily rhythm"
-              value={`${stats.dailyDone}/${dailyGoals.length}`}
+              value={`${stats.dailyCheckins}/${dailyGoals.length}`}
               caption="Checked in today"
             />
             <ProgressTile
               title="Monthly focus"
-              value={`${stats.monthlyDone}/${monthlyGoals.length}`}
-              caption="Milestones this month"
+              value={`${stats.monthlyCheckins}/${monthlyGoals.length}`}
+              caption="Checked in this month"
             />
             <ProgressTile
               title="Yearly trail"
